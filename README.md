@@ -1,4 +1,4 @@
-# Sitemap bundle
+# [WIP] Sitemap bundle
 
 [![Latest Stable Version](http://img.shields.io/packagist/v/jeroendesloovere/sitemap-bundle.svg)](https://packagist.org/packages/jeroendesloovere/sitemap-bundle)
 [![License](http://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/jeroendesloovere/sitemap-bundle/blob/master/LICENSE)
@@ -6,6 +6,12 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jeroendesloovere/sitemap-bundle/badges/quality-score.png)](https://scrutinizer-ci.com/g/jeroendesloovere/sitemap-bundle/)
 
 > This Symfony bundle allows you to easily generate a sitemapindex and one or multiple sitemap(s).
+
+## Work In progress
+
+What needs to be done:
+* The generating of sitemap files.
+* The generating of the sitemapindex.
 
 ## Usage
 
