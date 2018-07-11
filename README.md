@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/jeroendesloovere/sitemap-bundle.svg)](https://travis-ci.org/jeroendesloovere/sitemap-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jeroendesloovere/sitemap-bundle/badges/quality-score.png)](https://scrutinizer-ci.com/g/jeroendesloovere/sitemap-bundle/)
 
-> Symfony bundle for generating (one or multiple) Sitemaps and a SitemapIndex.
+> This Symfony bundle allows you to easily generate a sitemapindex and one or multiple sitemap(s).
 
 ## Usage
 
@@ -15,9 +15,10 @@
 composer require jeroendesloovere/sitemap-bundle
 ```
 
-### Example: How to add your custom sitemap (provider)
+### Example: "How to create your custom sitemap?"
 
-Add somewhere in `services.yaml`
+We need to notify Symfony that we have a new sitemap provider.
+Add the following somewhere in your `services.yaml`
 ```yaml
 services:
     App\SitemapProviders\NewsArticleSitemapProvider:
@@ -25,7 +26,9 @@ services:
             - { name: sitemap.provider }
 ```
 
-And create the following class:
+When the `SitemapGenerator` needs to generate the sitemap(s),
+it will ask all SitemapProviders to fill in the items.
+Create something like the following in your app.
 ```php
 <?php
 
@@ -60,18 +63,18 @@ class NewsArticleSitemapProvider extends SitemapProvider implements SitemapProvi
 }
 ```
 
-Then we execute the following to generate the sitemapindex and all the sitemaps.
+You can now generate the sitemap(s) by executing:
+```bash
+bin/console sitemap:generate
+```
+> Use a cronjob (f.e. every hour) to have up-to-date sitemaps.
 
+OR if you want to use PHP
 ```php
 $this->getContainer()->get('sitemap.generator')->generate();
 ```
 
-OR you can use the available console command.
-```bash
-bin/console sitemap:generate
-```
-
-### Extra: Using a Doctrine subscriber
+### Another example: "How to use a Doctrine subscriber?"
 
 Sometimes you want to fetch database changes from Doctrine events.
 The following code helps you doing that and regenerates the sitemaps.
