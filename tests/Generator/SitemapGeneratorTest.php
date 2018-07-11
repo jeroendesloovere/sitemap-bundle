@@ -30,20 +30,13 @@ final class SitemapGeneratorTest extends TestCase
     {
         $this->assertEquals(2, count($this->providers->getAll()));
     }
-
-    public function testGenerate(): void
-    {
-        $generator = new SitemapGenerator(__DIR__, $this->providers);
-
-        // @todo: add test code
-    }
 }
 
 class TestBlogArticleSitemapProvider extends SitemapProvider implements SitemapProviderInterface
 {
     public function __construct()
     {
-        parent::__construct('Test');
+        parent::__construct('BlogArticle');
     }
 
     public function createItems(): void
@@ -72,7 +65,7 @@ class TestBlogCategorySitemapProvider extends SitemapProvider implements Sitemap
 {
     public function __construct()
     {
-        parent::__construct('Test');
+        parent::__construct('BlogCategory');
     }
 
     public function createItems(): void

@@ -3,6 +3,7 @@
 namespace JeroenDesloovere\SitemapBundle\Provider;
 
 use JeroenDesloovere\SitemapBundle\Item\ChangeFrequency;
+use JeroenDesloovere\SitemapBundle\Item\SitemapItem;
 use JeroenDesloovere\SitemapBundle\Item\SitemapItems;
 
 class SitemapProvider

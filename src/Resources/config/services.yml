@@ -1,0 +1,12 @@
+services:
+    sitemap.console.generate:
+        class: JeroenDesloovere\SitemapBundle\Console\GenerateSitemapCommand
+        tags:
+            -  { name: console.command }
+    sitemap.generator:
+        class: JeroenDesloovere\SitemapBundle\Generator\SitemapGenerator
+        arguments:
+            - "%kernel.root_dir%"
+            - "@sitemap.providers"
+    sitemap.providers:
+        class: JeroenDesloovere\SitemapBundle\Provider\SitemapProviders

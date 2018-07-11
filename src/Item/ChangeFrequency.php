@@ -2,6 +2,8 @@
 
 namespace JeroenDesloovere\SitemapBundle\Item;
 
+use JeroenDesloovere\SitemapBundle\Exception\SitemapException;
+
 final class ChangeFrequency
 {
     protected const ALWAYS = 'always';
@@ -32,7 +34,7 @@ final class ChangeFrequency
     private function __construct(string $changeFrequency)
     {
         if (!in_array($changeFrequency, self::POSSIBLE_VALUES)) {
-            throw new \Exception('The given changeFrequency is not allowed.');
+            throw SitemapException::forNotExistingChangeFrequency($changeFrequency);
         }
 
         $this->value = $changeFrequency;
