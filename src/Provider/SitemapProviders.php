@@ -7,7 +7,7 @@ use JeroenDesloovere\SitemapBundle\Exception\SitemapException;
 class SitemapProviders
 {
     /** @var SitemapProviderInterface[] */
-    private $sitemapProviders;
+    private $sitemapProviders = [];
 
     public function add(SitemapProviderInterface $sitemapProvider): void
     {
