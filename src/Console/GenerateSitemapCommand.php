@@ -8,9 +8,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Build sitemap
- * Example: "bin/console sitemap:build"
+ * Example: "bin/console sitemap:generate"
  */
-class BuildSitemapCommand extends ContainerAwareCommand
+class GenerateSitemapCommand extends ContainerAwareCommand
 {
     protected function configure(): void
     {
@@ -21,6 +21,6 @@ class BuildSitemapCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $this->getContainer()->get('sitemap.builder')->buildCache();
+        $this->getContainer()->get('sitemap.generator')->generate();
     }
 }
