@@ -9,6 +9,11 @@ class SitemapException extends \Exception
         return new self('The path you have given is empty.');
     }
 
+    public static function forEmptyUrl(): self
+    {
+        return new self('The url you have given is empty.');
+    }
+
     public static function forNotExistingChangeFrequency(string $changeFrequency): self
     {
         return new self('The given changeFrequency "' . $changeFrequency . '" does not exist.');
