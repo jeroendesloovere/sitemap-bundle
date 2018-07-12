@@ -18,12 +18,10 @@ class SitemapProviderPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('sitemap.provider');
 
         foreach ($taggedServices as $id => $tags) {
-            foreach ($tags as $attributes) {
-                // add the SitemapProvider service to the SitemapProviders service
-                $definition->addMethodCall('add', [
-                    new Reference($id),
-                ]);
-            }
+            // add the SitemapProvider service to the SitemapProviders service
+            $definition->addMethodCall('add', [
+                new Reference($id),
+            ]);
         }
     }
 }
