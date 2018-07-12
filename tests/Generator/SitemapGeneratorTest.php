@@ -12,7 +12,8 @@ use JeroenDesloovere\SitemapBundle\Provider\SitemapProviders;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing;
 
 /**
  * How to execute all tests: `vendor/bin/phpunit tests`
@@ -35,10 +36,14 @@ final class SitemapGeneratorTest extends TestCase
 
     public function testGenerate(): void
     {
-        $mockedUrlGenerator = $this->createMock(UrlGenerator::class);
-        $mockedUrlGenerator->method('generate')->willReturn('https://www.jeroendesloovere.be');
+        $router = $this->getMockBuilder(Router::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $router->method('getContext')->will(
+            $this->returnValue($this->createMock(Routing\RequestContext::class))
+        );
 
-        $generator = new SitemapGenerator($mockedUrlGenerator, __DIR__, $this->providers);
+        $generator = new SitemapGenerator($router, __DIR__, $this->providers);
 
         // Overwrite the path to a virtual one for our tests
         $generator->setPath($this->virtualStorage->url());
