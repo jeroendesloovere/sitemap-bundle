@@ -18,6 +18,13 @@ class SitemapItem
     /** @var string */
     private $url;
 
+    /**
+     * @param string $url
+     * @param \DateTime $lastModifiedOn
+     * @param ChangeFrequency $changeFrequency
+     * @param int $priority
+     * @throws SitemapException
+     */
     public function __construct(
         string $url,
         \DateTime $lastModifiedOn,

@@ -20,6 +20,7 @@ class SitemapGenerator
     private $providers;
 
     /**
+     * @param UrlGenerator $urlGenerator
      * @param string $path
      * @param SitemapProviders $providers
      * @throws \Exception
