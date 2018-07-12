@@ -10,8 +10,7 @@
 ## Work In progress
 
 What needs to be done:
-* The generating of sitemap files.
-* The generating of the sitemapindex.
+* Generate the "sitemap provider last modified on datetime" which we need to show in the sitemapindex.
 
 ## Usage
 
