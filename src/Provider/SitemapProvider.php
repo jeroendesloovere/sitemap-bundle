@@ -30,8 +30,12 @@ class SitemapProvider
         return $this->key;
     }
 
-    public function createItem(string $url, \DateTime $lastModifiedOn, ChangeFrequency $changeFrequency): void
-    {
-        $this->items->add(new SitemapItem($url, $lastModifiedOn, $changeFrequency));
+    public function createItem(
+        string $url,
+        \DateTime $lastModifiedOn,
+        ChangeFrequency $changeFrequency,
+        int $priority = 5
+    ): void {
+        $this->items->add(new SitemapItem($url, $lastModifiedOn, $changeFrequency, $priority));
     }
 }

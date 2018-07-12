@@ -29,7 +29,7 @@ class SitemapItem
         string $url,
         \DateTime $lastModifiedOn,
         ChangeFrequency $changeFrequency,
-        int $priority = 5
+        int $priority
     ) {
         $this->url = $url;
         $this->lastModifiedOn = $lastModifiedOn;
