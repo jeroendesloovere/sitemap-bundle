@@ -6,6 +6,7 @@ services:
     sitemap.generator:
         class: JeroenDesloovere\SitemapBundle\Generator\SitemapGenerator
         arguments:
+            - Symfony\Component\Routing\Generator\UrlGenerator
             - "%kernel.root_dir%"
             - "@sitemap.providers"
     sitemap.providers:

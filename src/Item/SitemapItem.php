@@ -2,22 +2,32 @@
 
 namespace JeroenDesloovere\SitemapBundle\Item;
 
+use JeroenDesloovere\SitemapBundle\Exception\SitemapException;
+
 class SitemapItem
 {
+    /** @var ChangeFrequency */
+    private $changeFrequency;
+
     /** @var \DateTime */
-    private $editedOn;
+    private $lastModifiedOn;
+
+    /** @var int - Value between 0 and 10, will be divided by 10 */
+    private $priority = 10;
 
     /** @var string */
     private $url;
 
-    /** @var ChangeFrequency */
-    private $changeFrequency;
-
-    public function __construct(string $url, \DateTime $editedOn, ChangeFrequency $changeFrequency)
-    {
+    public function __construct(
+        string $url,
+        \DateTime $lastModifiedOn,
+        ChangeFrequency $changeFrequency,
+        int $priority = 5
+    ) {
         $this->url = $url;
-        $this->editedOn = $editedOn;
+        $this->lastModifiedOn = $lastModifiedOn;
         $this->changeFrequency = $changeFrequency;
+        $this->setPriority($priority);
     }
 
     public function getChangeFrequency(): ChangeFrequency
@@ -25,13 +35,31 @@ class SitemapItem
         return $this->changeFrequency;
     }
 
-    public function getEditedOn(): \DateTime
+    public function getLastModifiedOn(): \DateTime
     {
-        return $this->editedOn;
+        return $this->lastModifiedOn;
+    }
+
+    public function getPriority(): int
+    {
+        return $this->priority;
     }
 
     public function getUrl(): string
     {
         return $this->url;
+    }
+
+    /**
+     * @param int $priority
+     * @throws SitemapException
+     */
+    private function setPriority(int $priority): void
+    {
+        if ($priority < 0 || $priority > 10) {
+            throw SitemapException::forPriority();
+        }
+
+        $this->priority = $priority;
     }
 }

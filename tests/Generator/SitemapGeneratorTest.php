@@ -9,7 +9,10 @@ use JeroenDesloovere\SitemapBundle\Item\ChangeFrequency;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProvider;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProviderInterface;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProviders;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 /**
  * How to execute all tests: `vendor/bin/phpunit tests`
@@ -19,11 +22,32 @@ final class SitemapGeneratorTest extends TestCase
     /** @var SitemapProviders */
     private $providers;
 
+    /** @var vfsStreamDirectory - We save the generated sitemaps to a virtual storage */
+    private $virtualStorage;
+
     public function setUp(): void
     {
         $this->providers = new SitemapProviders();
         $this->providers->add(new TestBlogArticleSitemapProvider());
         $this->providers->add(new TestBlogCategorySitemapProvider());
+        $this->virtualStorage = vfsStream::setup();
+    }
+
+    public function testGenerate(): void
+    {
+        $mockedUrlGenerator = $this->createMock(UrlGenerator::class);
+        $mockedUrlGenerator->method('generate')->willReturn('https://www.jeroendesloovere.be');
+
+        $generator = new SitemapGenerator($mockedUrlGenerator, __DIR__, $this->providers);
+
+        // Overwrite the path to a virtual one for our tests
+        $generator->setPath($this->virtualStorage->url());
+
+        // Test if generate is working
+        $generator->generate();
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap.xml'));
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap_BlogArticle.xml'));
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap_BlogCategory.xml'));
     }
 
     public function testItems(): void

@@ -37,4 +37,9 @@ class SitemapProviders
     {
         return $this->sitemapProviders;
     }
+
+    public function getKeys(): array
+    {
+        return array_keys($this->sitemapProviders);
+    }
 }

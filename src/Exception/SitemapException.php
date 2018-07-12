@@ -18,4 +18,9 @@ class SitemapException extends \Exception
     {
         return new self('The requested sitemap provider with key "' . $sitemapProviderKey . '" does not exist.');
     }
+
+    public static function forPriority(): self
+    {
+        return new self('Priority must be a value between 0 and 10.');
+    }
 }
