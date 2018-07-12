@@ -7,6 +7,7 @@ use JeroenDesloovere\SitemapBundle\Item\SitemapItem;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProviderInterface;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProviders;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class SitemapGenerator
 {
@@ -20,21 +21,27 @@ class SitemapGenerator
     private $providers;
 
     /**
-     * @param UrlGenerator $urlGenerator
+     * @param Router $router
      * @param string $path
      * @param SitemapProviders $providers
      * @throws \Exception
      */
-    public function __construct(UrlGenerator $urlGenerator, string $path, SitemapProviders $providers)
+    public function __construct(Router $router, string $path, SitemapProviders $providers)
     {
-        $this->url = $urlGenerator->generate('', [], UrlGenerator::ABSOLUTE_URL);
+        $this->setUrl($router->getContext()->getScheme() . '://' . $router->getContext()->getHost());
         $this->providers = $providers;
         $this->setPath($path);
     }
 
     public function generate(): void
     {
-        foreach ($this->providers->getAll() as $provider) {
+        $providers = $this->providers->getAll();
+
+        if (empty($providers)) {
+            return;
+        }
+
+        foreach ($providers as $provider) {
             $this->saveSitemapForProvider($provider);
         }
 
@@ -49,7 +56,7 @@ class SitemapGenerator
         /** @var SitemapItem $item */
         foreach ($provider->getItems()->getAll() as $item) {
             $itemNode = $rootNode->addChild('url');
-            $itemNode->addChild('loc', $this->url . $item->getUrl());
+            $itemNode->addChild('loc', $this->getUrl() . $item->getUrl());
             $itemNode->addChild('changefreq', $item->getChangeFrequency()->__toString());
             $itemNode->addChild('lastmod', $item->getLastModifiedOn()->format('Y-m-d'));
             $itemNode->addChild('priority', $item->getPriority()/10);
@@ -65,7 +72,7 @@ class SitemapGenerator
         /** @var string $key */
         foreach ($this->providers->getKeys() as $key) {
             $itemNode = $rootNode->addChild('sitemap');
-            $itemNode->addChild('loc', $this->url . '/sitemap_' . $key . '.xml');
+            $itemNode->addChild('loc', $this->getUrl() . '/sitemap_' . $key . '.xml');
             // @todo: lastmod
             $itemNode->addChild('lastmod', (new \DateTime())->format('Y-m-d'));
         }
@@ -76,6 +83,11 @@ class SitemapGenerator
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
     }
 
     public function regenerateForSitemapProvider(SitemapProviderInterface $provider): void
@@ -113,5 +125,20 @@ class SitemapGenerator
         }
 
         $this->path = $path;
+    }
+
+    /**
+     * Set the url
+     *
+     * @param string $url
+     * @throws \Exception
+     */
+    public function setUrl(string $url): void
+    {
+        if ($url === '') {
+            throw SitemapException::forEmptyUrl();
+        }
+
+        $this->url = $url;
     }
 }

@@ -5,9 +5,10 @@ services:
             -  { name: console.command }
     sitemap.generator:
         class: JeroenDesloovere\SitemapBundle\Generator\SitemapGenerator
+        public: true
         arguments:
-            - Symfony\Component\Routing\Generator\UrlGenerator
-            - "%kernel.root_dir%"
+            - "@router"
+            - "%kernel.root_dir%/../"
             - "@sitemap.providers"
     sitemap.providers:
         class: JeroenDesloovere\SitemapBundle\Provider\SitemapProviders
