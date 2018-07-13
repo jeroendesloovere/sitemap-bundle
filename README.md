@@ -1,6 +1,6 @@
 # Sitemap bundle
 
-[![Latest Stable Version](http://img.shields.io/packagist/v/jeroendesloovere/sitemap-bundle.svg)](https://packagist.org/packages/jeroendesloovere/sitemap-bundle)
+[![Latest Stable Version](https://poser.pugx.org/jeroendesloovere/sitemap-bundle/v/stable)](https://packagist.org/packages/jeroendesloovere/sitemap-bundle)
 [![License](http://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/jeroendesloovere/sitemap-bundle/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/jeroendesloovere/sitemap-bundle.svg)](https://travis-ci.org/jeroendesloovere/sitemap-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jeroendesloovere/sitemap-bundle/badges/quality-score.png)](https://scrutinizer-ci.com/g/jeroendesloovere/sitemap-bundle/)
