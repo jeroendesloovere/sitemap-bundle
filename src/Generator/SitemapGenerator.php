@@ -6,13 +6,13 @@ use JeroenDesloovere\SitemapBundle\Exception\SitemapException;
 use JeroenDesloovere\SitemapBundle\Item\SitemapItem;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProviderInterface;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProviders;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouterInterface;
 
 class SitemapGenerator
 {
-    /** @var string */
-    private $url;
+    /** @var RouterInterface */
+    private $router;
 
     /** @var string - The path where we must save all the sitemaps.*/
     private $path;
@@ -21,14 +21,14 @@ class SitemapGenerator
     private $providers;
 
     /**
-     * @param Router $router
+     * @param RouterInterface $router
      * @param string $path
      * @param SitemapProviders $providers
      * @throws \Exception
      */
-    public function __construct(Router $router, string $path, SitemapProviders $providers)
+    public function __construct(RouterInterface $router, string $path, SitemapProviders $providers)
     {
-        $this->setUrl($router->getContext()->getScheme() . '://' . $router->getContext()->getHost());
+        $this->router = $router;
         $this->providers = $providers;
         $this->setPath($path);
     }
@@ -85,9 +85,12 @@ class SitemapGenerator
         return $this->path;
     }
 
-    public function getUrl(): string
+    private function getUrl(): string
     {
-        return $this->url;
+        /** @var RequestContext $context */
+        $context = $this->router->getContext();
+
+        return $context->getScheme() . '://' . $context->getHost() . $context->getBaseUrl();
     }
 
     public function regenerateForSitemapProvider(SitemapProviderInterface $provider): void
@@ -125,20 +128,5 @@ class SitemapGenerator
         }
 
         $this->path = $path;
-    }
-
-    /**
-     * Set the url
-     *
-     * @param string $url
-     * @throws \Exception
-     */
-    public function setUrl(string $url): void
-    {
-        if ($url === '') {
-            throw SitemapException::forEmptyUrl();
-        }
-
-        $this->url = $url;
     }
 }
