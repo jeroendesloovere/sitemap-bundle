@@ -79,7 +79,60 @@ OR if you want to use PHP
 $this->getContainer()->get('sitemap.generator')->generate();
 ```
 
-### Another example: "How to use a Doctrine subscriber?"
+### Example: You can overwrite the context
+
+**Problem**
+
+There is a known "bug" in symfony, that the context in console is always `http://localhost`, f.e.: when executing `bin/console sitemap:generate`.
+[Read more about this on the Symfony website](https://symfony.com/doc/current/console/request_context.html).
+
+**Solution**
+
+One of the two provided solutions is that you can solve the empty context by adding a CompilerPass in your code.
+```php
+<?php
+
+namespace App\Sitemap;
+
+use App\Sitemap\DependencyInjection\Compiler\SitemapProviderPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+class SitemapBundle extends Bundle
+{
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new SitemapProviderPass());
+    }
+}
+```
+
+```php
+<?php
+
+namespace App\Sitemap\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+
+class SitemapCompilerPass implements CompilerPassInterface
+{
+    public function process(ContainerBuilder $container): void
+    {
+        if (!$container->has('sitemap.generator')) {
+            return;
+        }
+
+        $container->setParameter('router.request_context.host', 'www.mywebsite.com');
+        $container->setParameter('router.request_context.scheme', 'http');
+        $container->setParameter('router.request_context.base_url', '');
+        $container->setParameter('asset.request_context.base_path', $container->getParameter('router.request_context.base_url'));
+        $container->setParameter('asset.request_context.secure', true);
+    }
+}
+```
+
+### Example: "How to use a Doctrine subscriber?"
 
 Sometimes you want to fetch database changes from Doctrine events.
 The following code helps you doing that and regenerates the sitemaps.
