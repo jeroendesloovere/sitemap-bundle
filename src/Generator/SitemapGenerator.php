@@ -89,8 +89,13 @@ class SitemapGenerator
     {
         /** @var RequestContext $context */
         $context = $this->router->getContext();
+        $url = $context->getScheme() . '://' . $context->getHost();
 
-        return $context->getScheme() . '://' . $context->getHost() . $context->getBaseUrl();
+        if ($context->getBaseUrl() !== '') {
+            $url .= '/' . $context->getBaseUrl();
+        }
+
+        return $context->getScheme() . '://' . $context->getHost();
     }
 
     public function regenerateForSitemapProvider(SitemapProviderInterface $provider): void
