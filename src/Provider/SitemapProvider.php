@@ -27,12 +27,10 @@ class SitemapProvider
 
     public function getFilename(): string
     {
-        $suffix = $this->getKey();
-
         try {
             $suffix = (new \ReflectionClass($this->getKey()))->getShortName();
         } catch (\Exception $e) {
-
+            $suffix = array_pop(explode('\\', $this->getKey()));
         }
 
         return 'sitemap_' . $suffix;
