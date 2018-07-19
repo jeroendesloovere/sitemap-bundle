@@ -29,6 +29,7 @@ final class SitemapGeneratorTest extends TestCase
     public function setUp(): void
     {
         $this->providers = new SitemapProviders();
+        $this->providers->add(new TestPageSitemapProvider());
         $this->providers->add(new TestBlogArticleSitemapProvider());
         $this->providers->add(new TestBlogCategorySitemapProvider());
         $this->virtualStorage = vfsStream::setup();
@@ -51,13 +52,14 @@ final class SitemapGeneratorTest extends TestCase
         // Test if generate is working
         $generator->generate();
         $this->assertTrue($this->virtualStorage->hasChild('sitemap.xml'));
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap_Page.xml'));
         $this->assertTrue($this->virtualStorage->hasChild('sitemap_BlogArticle.xml'));
         $this->assertTrue($this->virtualStorage->hasChild('sitemap_BlogCategory.xml'));
     }
 
     public function testItems(): void
     {
-        $this->assertEquals(2, count($this->providers->getAll()));
+        $this->assertEquals(3, count($this->providers->getAll()));
     }
 }
 
@@ -117,4 +119,40 @@ class TestBlogCategorySitemapProvider extends SitemapProvider implements Sitemap
             ]
         ];
     }
+}
+
+class TestPageSitemapProvider extends SitemapProvider implements SitemapProviderInterface
+{
+    public function __construct()
+    {
+        parent::__construct('App\\PagesBundle\\Entity\\Page');
+    }
+
+    public function createItems(): void
+    {
+        foreach ($this->getDummyPages() as $page) {
+            $this->createItem($page['url'], $page['editedOn'], ChangeFrequency::monthly());
+        }
+    }
+
+    private function getDummyPages(): array
+    {
+        return [
+            [
+                'url' => '/nl/first-page',
+                'editedOn' => new \DateTime(),
+            ],
+            [
+                'url' => '/nl/second-page',
+                'editedOn' => new \DateTime(),
+            ]
+        ];
+    }
+}
+
+namespace App\PagesBundle\Entity;
+
+class Page
+{
+    // Empty class for testing
 }

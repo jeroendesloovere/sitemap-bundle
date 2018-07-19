@@ -25,6 +25,17 @@ class SitemapProvider
         return $this->items;
     }
 
+    public function getFilename(): string
+    {
+        try {
+            $suffix = (new \ReflectionClass($this->getKey()))->getShortName();
+        } catch (\Exception $e) {
+            $suffix = array_pop(explode('\\', $this->getKey()));
+        }
+
+        return 'sitemap_' . $suffix;
+    }
+
     public function getKey(): string
     {
         return $this->key;
