@@ -30,7 +30,8 @@ class SitemapProvider
         try {
             $suffix = (new \ReflectionClass($this->getKey()))->getShortName();
         } catch (\Exception $e) {
-            $suffix = array_pop(explode('\\', $this->getKey()));
+            $namespaceParts = explode('\\', $this->getKey());
+            $suffix = array_pop($namespaceParts);
         }
 
         return 'sitemap_' . $suffix;
