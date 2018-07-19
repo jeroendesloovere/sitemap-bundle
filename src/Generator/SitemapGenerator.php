@@ -107,7 +107,7 @@ class SitemapGenerator
     private function saveSitemapForProvider(SitemapProviderInterface $provider): void
     {
         file_put_contents(
-            $this->getPath() . '/sitemap_' . $provider->getKey() . '.xml',
+            $this->getPath() . '/' . $provider->getFilename() . '.xml',
             $this->generateSitemapForProvider($provider)
         );
     }
