@@ -32,6 +32,7 @@ final class SitemapGeneratorTest extends TestCase
         $this->providers->add(new TestPageSitemapProvider());
         $this->providers->add(new TestBlogArticleSitemapProvider());
         $this->providers->add(new TestBlogCategorySitemapProvider());
+        $this->providers->add(new TestEmptySitemapProvider());
         $this->virtualStorage = vfsStream::setup();
     }
 
@@ -59,7 +60,7 @@ final class SitemapGeneratorTest extends TestCase
 
     public function testItems(): void
     {
-        $this->assertEquals(3, count($this->providers->getAll()));
+        $this->assertEquals(4, count($this->providers->getAll()));
     }
 }
 
@@ -147,6 +148,19 @@ class TestPageSitemapProvider extends SitemapProvider implements SitemapProvider
                 'editedOn' => new \DateTime(),
             ]
         ];
+    }
+}
+
+class TestEmptySitemapProvider extends SitemapProvider implements SitemapProviderInterface
+{
+    public function __construct()
+    {
+        parent::__construct('Empty');
+    }
+
+    public function createItems(): void
+    {
+        // no items
     }
 }
 
