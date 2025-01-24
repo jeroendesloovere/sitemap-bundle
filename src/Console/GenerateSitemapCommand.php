@@ -2,7 +2,8 @@
 
 namespace JeroenDesloovere\SitemapBundle\Console;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use JeroenDesloovere\SitemapBundle\Generator\SitemapGenerator;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -10,17 +11,23 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Build sitemap
  * Example: "bin/console sitemap:generate"
  */
-class GenerateSitemapCommand extends ContainerAwareCommand
+class GenerateSitemapCommand extends Command
 {
+    private $sitemapGenerator;
+
+    public function __construct(SitemapGenerator $sitemapGenerator)
+    {
+        $this->sitemapGenerator = $sitemapGenerator;
+        parent::__construct('sitemap:generate');
+    }
+
     protected function configure(): void
     {
-        $this
-            ->setName('sitemap:generate')
-            ->setDescription('Generate the sitemapindex and all the sitemaps');
+        $this->setDescription('Generate the sitemapindex and all the sitemaps');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $this->getContainer()->get('sitemap.generator')->generate();
+        $this->sitemapGenerator->generate();
     }
 }
