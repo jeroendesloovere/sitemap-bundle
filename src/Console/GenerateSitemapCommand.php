@@ -26,8 +26,10 @@ class GenerateSitemapCommand extends Command
         $this->setDescription('Generate the sitemapindex and all the sitemaps');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->sitemapGenerator->generate();
+
+        return Command::SUCCESS;
     }
 }
