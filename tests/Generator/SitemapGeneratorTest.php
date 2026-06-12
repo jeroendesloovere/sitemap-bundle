@@ -58,6 +58,34 @@ final class SitemapGeneratorTest extends TestCase
         $this->assertTrue($this->virtualStorage->hasChild('sitemap_BlogCategory.xml'));
     }
 
+    public function testRegenerateForSitemapProvider(): void
+    {
+        $router = $this->getMockBuilder(Router::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $router->method('getContext')->will(
+            $this->returnValue($this->createMock(Routing\RequestContext::class))
+        );
+
+        $generator = new SitemapGenerator($router, __DIR__, $this->providers);
+
+        // Overwrite the path to a virtual one for our tests
+        $generator->setPath($this->virtualStorage->url());
+
+        // Regenerate only for the BlogArticle provider
+        $generator->regenerateForSitemapProvider(new TestBlogArticleSitemapProvider());
+
+        // The sitemap index must always be regenerated
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap.xml'));
+
+        // Only the specific provider's sitemap file should be created
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap_BlogArticle.xml'));
+
+        // Other providers' sitemap files should not be created
+        $this->assertFalse($this->virtualStorage->hasChild('sitemap_Page.xml'));
+        $this->assertFalse($this->virtualStorage->hasChild('sitemap_BlogCategory.xml'));
+    }
+
     public function testItems(): void
     {
         $this->assertEquals(4, count($this->providers->getAll()));
