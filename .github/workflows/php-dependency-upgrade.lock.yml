@@ -22,7 +22,7 @@
 #
 # Daily check for new releases of PHP dependencies listed in composer.json. When a new release is found, fetches the changelog from packagist.org, analyzes any breaking changes, and creates a pull request with the upgrade.
 #
-# gh-aw-metadata: {"schema_version":"v3","frontmatter_hash":"b36904f6ad2a86e167109a3842bbf773cbbabe4f25169d153ae6960ae0c1df2b","compiler_version":"v0.64.4","strict":true,"agent_id":"copilot"}
+# gh-aw-metadata: {"schema_version":"v3","frontmatter_hash":"b78e566e4911f0c669f2565760fb01eaa00512efe9794bc19c710792923cc8bb","compiler_version":"v0.64.4","strict":true,"agent_id":"copilot"}
 
 name: "PHP Dependency Upgrade"
 "on":
@@ -831,7 +831,7 @@ jobs:
           GH_AW_CODE_PUSH_FAILURE_COUNT: ${{ needs.safe_outputs.outputs.code_push_failure_count }}
           GH_AW_LOCKDOWN_CHECK_FAILED: ${{ needs.activation.outputs.lockdown_check_failed }}
           GH_AW_GROUP_REPORTS: "false"
-          GH_AW_FAILURE_REPORT_AS_ISSUE: "true"
+          GH_AW_FAILURE_REPORT_AS_ISSUE: "false"
           GH_AW_TIMEOUT_MINUTES: "20"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
@@ -1115,4 +1115,3 @@ jobs:
           name: safe-output-items
           path: /tmp/gh-aw/safe-output-items.jsonl
           if-no-files-found: ignore
-

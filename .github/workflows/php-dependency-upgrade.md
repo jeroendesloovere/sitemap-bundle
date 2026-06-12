@@ -22,6 +22,7 @@ network:
 safe-outputs:
   create-pull-request:
     max: 5
+  report-failure-as-issue: false
 checkout:
   fetch-depth: 0
 runtimes:
@@ -33,8 +34,6 @@ steps:
       php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
       php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer
       rm composer-setup.php
-safe-outputs:
-  report-failure-as-issue: false
 ---
 
 # PHP Dependency Upgrade Agent
