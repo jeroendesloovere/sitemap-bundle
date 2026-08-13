@@ -119,10 +119,18 @@ final class SitemapGeneratorTest extends TestCase
         $generator->setPath($this->virtualStorage->url());
         $generator->generate();
 
-        $xml = simplexml_load_string(file_get_contents($this->virtualStorage->url() . '/sitemap_Fixed.xml'));
-        $namespaces = $xml->getNamespaces(true);
-        $urlNode = $xml->children($namespaces[''])->url[0];
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap_Fixed.xml'));
 
+        $xmlString = file_get_contents($this->virtualStorage->url() . '/sitemap_Fixed.xml');
+        $this->assertNotFalse($xmlString);
+
+        $xml = simplexml_load_string($xmlString);
+        $this->assertInstanceOf(\SimpleXMLElement::class, $xml);
+
+        $namespaces = $xml->getNamespaces(true);
+        $this->assertArrayHasKey('', $namespaces);
+        $urlNode = $xml->children($namespaces[''])->url[0];
+        $this->assertNotNull($urlNode);
         $this->assertSame('https://example.com/fixed-page', (string) $urlNode->loc);
         $this->assertSame('monthly', (string) $urlNode->changefreq);
         $this->assertSame('2020-01-02', (string) $urlNode->lastmod);
