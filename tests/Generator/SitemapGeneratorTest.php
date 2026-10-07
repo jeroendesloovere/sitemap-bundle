@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeroenDesloovere\Tests\SitemapBundle\Generator;
 
+use JeroenDesloovere\SitemapBundle\Exception\SitemapException;
 use JeroenDesloovere\SitemapBundle\Generator\SitemapGenerator;
 use JeroenDesloovere\SitemapBundle\Item\ChangeFrequency;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProvider;
