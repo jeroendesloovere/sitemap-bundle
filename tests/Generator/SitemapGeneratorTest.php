@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeroenDesloovere\Tests\SitemapBundle\Generator;
 
+use JeroenDesloovere\SitemapBundle\Exception\SitemapException;
 use JeroenDesloovere\SitemapBundle\Generator\SitemapGenerator;
 use JeroenDesloovere\SitemapBundle\Item\ChangeFrequency;
 use JeroenDesloovere\SitemapBundle\Provider\SitemapProvider;
@@ -89,6 +90,67 @@ final class SitemapGeneratorTest extends TestCase
     public function testItems(): void
     {
         $this->assertEquals(4, count($this->providers->getAll()));
+    }
+
+    public function testGenerateDoesNothingWithoutProviders(): void
+    {
+        $router = $this->getMockBuilder(Router::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $router->method('getContext')->willReturn(new Routing\RequestContext('', 'GET', 'example.com', 'https'));
+
+        $generator = new SitemapGenerator($router, __DIR__, new SitemapProviders());
+        $generator->setPath($this->virtualStorage->url());
+        $generator->generate();
+
+        $this->assertFalse($this->virtualStorage->hasChild('sitemap.xml'));
+    }
+
+    public function testGenerateWritesExpectedXmlContent(): void
+    {
+        $router = $this->getMockBuilder(Router::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $router->method('getContext')->willReturn(new Routing\RequestContext('', 'GET', 'example.com', 'https'));
+
+        $providers = new SitemapProviders();
+        $providers->add(new FixedTestSitemapProvider());
+
+        $generator = new SitemapGenerator($router, __DIR__, $providers);
+        $generator->setPath($this->virtualStorage->url());
+        $generator->generate();
+
+        $this->assertTrue($this->virtualStorage->hasChild('sitemap_Fixed.xml'));
+
+        $xmlString = file_get_contents($this->virtualStorage->url() . '/sitemap_Fixed.xml');
+        $this->assertNotFalse($xmlString);
+
+        $xml = simplexml_load_string($xmlString);
+        $this->assertInstanceOf(\SimpleXMLElement::class, $xml);
+
+        $namespaces = $xml->getNamespaces(true);
+        $this->assertArrayHasKey('', $namespaces);
+        $urlNode = $xml->children($namespaces[''])->url[0];
+        $this->assertNotNull($urlNode);
+        $this->assertSame('https://example.com/fixed-page', (string) $urlNode->loc);
+        $this->assertSame('monthly', (string) $urlNode->changefreq);
+        $this->assertSame('2020-01-02', (string) $urlNode->lastmod);
+        $this->assertSame('0.7', (string) $urlNode->priority);
+    }
+
+    public function testSetPathThrowsForEmptyPath(): void
+    {
+        $this->expectException(SitemapException::class);
+
+        $router = $this->getMockBuilder(Router::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $router->method('getContext')->will(
+            $this->returnValue($this->createMock(Routing\RequestContext::class))
+        );
+
+        $generator = new SitemapGenerator($router, __DIR__, $this->providers);
+        $generator->setPath('');
     }
 }
 
@@ -189,6 +251,24 @@ class TestEmptySitemapProvider extends SitemapProvider implements SitemapProvide
     public function createItems(): void
     {
         // no items
+    }
+}
+
+class FixedTestSitemapProvider extends SitemapProvider implements SitemapProviderInterface
+{
+    public function __construct()
+    {
+        parent::__construct('Fixed');
+    }
+
+    public function createItems(): void
+    {
+        $this->createItem(
+            '/fixed-page',
+            new \DateTime('2020-01-02'),
+            ChangeFrequency::monthly(),
+            7
+        );
     }
 }
 
